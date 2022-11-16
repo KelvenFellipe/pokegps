@@ -1,7 +1,7 @@
 #este codigo usa o nome de uma cidade que o usuario digitar.
 #fala qual a temmperatura atual do local indicado.
 #indica também o clima.
-#usa as informaçoes de temperatura e clima para indicar um pokemon que voce acharia no local no momento.
+#usa as informaçoes de temperatura e clima para indicar um pokemon que voce acharia no local no momento. `1`
 
 import requests
 import random
