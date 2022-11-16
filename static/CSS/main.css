@@ -1,0 +1,39 @@
+body {
+	background-color: #363636;
+	text-align: center;
+}
+
+p {
+	color:  white;
+	font: Arial;
+	font-size: 1.6em;
+	margin: 20px;
+}
+
+img {
+	margin: 60px 0 30px 0;
+	width: 700px;
+}
+
+input {
+	width: 300px;
+	height: 50px;
+	margin: 20px;
+	border: none;
+	border-radius: 10px;
+	font: Arial;
+	text-align: center;
+	font-size: 1.3em;
+}
+
+#greet {
+	background-color: darkgray;
+	color: white;
+	width: 180px;
+}
+
+#greet:hover{
+	background-color: DimGray;
+	color:  white;
+	width: 180px;
+}

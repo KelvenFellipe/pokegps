@@ -1,0 +1,23 @@
+<!DOCTYPE hdml>
+<html>
+	<head>
+		<title>
+			<meta charset="UTF-8">
+			<title>EAI</title>
+			<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+		</title>
+	</head>
+	<body>
+		<img src="https://user-images.githubusercontent.com/73800841/202286078-c4408e42-f923-45cb-88cc-8c733dd32486.png">
+		<br>
+		<form action="greet" method="post">
+			{% for message in get_flashed_messages()%}
+				<p>{{message}}</p>
+			{% endfor %}
+			<br>
+			<input type="text" name="cidade">
+			<br>
+			<input type="submit" value="PROCURAR" id= greet>
+		</form>
+	</body>
+</html>
