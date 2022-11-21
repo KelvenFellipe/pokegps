@@ -130,6 +130,8 @@ def greet():
 			flash(pokera + " é um pokemon do tipo normal")
 
 
+
+
 		pokeidurl = poke_rand["pokemon"] ["url"]
 		response = requests.get(requests.get(pokeidurl).json()["sprites"] ["front_default"])
 		img = Image.open(BytesIO(response.content))
