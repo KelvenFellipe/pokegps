@@ -3,9 +3,8 @@
 #indica também o clima.
 #usa as informaçoes de temperatura e clima para indicar um pokemon que voce acharia no local no momento. `1`
 
-import requests
-import random
-import json
+import requests, random, json
+
 from flask import Flask, render_template, request, flash
 app = Flask(__name__)
 app.secret_key = "pokemonnn"
