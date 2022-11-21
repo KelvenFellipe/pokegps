@@ -8,16 +8,18 @@
 		</title>
 	</head>
 	<body>
-		<img src="https://user-images.githubusercontent.com/73800841/202286078-c4408e42-f923-45cb-88cc-8c733dd32486.png">
+		<img src="https://user-images.githubusercontent.com/73800841/202286078-c4408e42-f923-45cb-88cc-8c733dd32486.png" class="image1">
 		<br>
 		<form action="greet" method="post">
 			{% for message in get_flashed_messages()%}
 				<p>{{message}}</p>
 			{% endfor %}
 			<br>
-			<input type="text" name="cidade">
+			<input type="text" name="cidade" id="cidadetb">
 			<br>
 			<input type="submit" value="PROCURAR" id= greet>
+			<br>
+			<img src="data:image/png;base64,{{ img_data }}" class="image2" style="display: none" onload="this.style.display=''">
 		</form>
 	</body>
 </html>

@@ -1,10 +1,11 @@
 #este codigo usa o nome de uma cidade que o usuario digitar.
 #fala qual a temmperatura atual do local indicado.
 #indica também o clima.
-#usa as informaçoes de temperatura e clima para indicar um pokemon que voce acharia no local no momento. `1`
+#usa as informaçoes de temperaturaeratura e clima para indicar um pokemon que voce acharia no local no momento. `1`
 
-import requests, random, json
-
+import requests, random, base64, io
+from PIL import Image
+from io import BytesIO
 from flask import Flask, render_template, request, flash
 app = Flask(__name__)
 app.secret_key = "pokemonnn"
@@ -17,109 +18,123 @@ def index():
 @app.route("/greet", methods=["POST", "GET"])
 def greet():
 
-	city = request.form.get("cidade")
+	if request.form.get("cidade") == "":
+		flash("Erro, Insira um nome de cidade valido")
+		return render_template("index.html")
 
-	api_address = "http://api.openweathermap.org/data/2.5/weather?appid=3f0894b09e85ac5744a17a170a15b5b8&units=metric&q="
-	url = api_address + city
-	rain = "a"
-	json_data = requests.get(url).json()
-	rain = str(json_data['weather'] [0] ['main'])
-	temperatura = (json_data['main'] ['temp'])
-	tipo = "a"	
-	temp = int(temperatura)
-	pokeapi = "https://pokeapi.co/api/v2/type/"
+	else:		
+		
+		city = request.form.get("cidade")
 
-	if rain == "Thunderstorm" or rain == "Rain":
+		api_address = "http://api.openweathermap.org/data/2.5/weather?appid=3f0894b09e85ac5744a17a170a15b5b8&units=metric&q="
+		url = api_address + city
+		rain = "a"
+		json_data = requests.get(url).json()
 
-		tipo = "electric"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]	
+		if json_data["cod"] == "404":
+			flash("Erro, Insira um nome de cidade valido")
+			return render_template("index.html")
 
-		flash("Em " + city + " esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo elétrico")
+		rain = str(json_data['weather'] [0] ['main'])
+		temperatura = int((json_data['main'] ['temp']))
+		pokeapi = "https://pokeapi.co/api/v2/type/"
 
-	elif temp < 5:
-		tipo = "ice"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+		if rain == "Thunderstorm" or rain == "Rain":
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo gelo")
+			urlpoke = pokeapi + "electric"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]	
 
-	elif temp >= 5 and temp < 10:
-		tipo = "water"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+			flash("Em " + city + " esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo elétrico")
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo água")
+		elif temperatura < 5:
 
-	elif temp >= 12 and temp < 15:
-		tipo = "grass"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+			urlpoke = pokeapi + "ice"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo grama")
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo gelo")
 
-	elif temp >= 15 and temp < 21:
-		tipo = "ground"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+		elif temperatura >= 5 and temperatura < 10:
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo solo")
+			urlpoke = pokeapi + "water"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
 
-	elif temp >= 23 and temp < 27:
-		tipo = "bug"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo água")
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo inseto")
+		elif temperatura >= 12 and temperatura < 15:
 
-	elif temp >= 27 and temp < 34:
-		tipo = "rock"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+			urlpoke = pokeapi + "grass"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo pedra")
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo grama")
 
-	elif temp > 33:
-		tipo = "fire"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+		elif temperatura >= 15 and temperatura < 21:
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo fogo")
+			urlpoke = pokeapi + "ground"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
 
-	else:
-		tipo = "normal"
-		urlpoke = pokeapi + tipo
-		pokejson = requests.get(urlpoke).json()
-		poke_rand = random.choice(pokejson["pokemon"])
-		pokera = poke_rand["pokemon"] ["name"]
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo solo")
 
-		flash("Em " + city + " não esta chovendo, atualmente " + str(temp) + " Graus Celsius")
-		flash(pokera + " é um pokemon do tipo normal")
+		elif temperatura >= 23 and temperatura < 27:
+
+			urlpoke = pokeapi + "bug"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
+
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo inseto")
+
+		elif temperatura >= 27 and temperatura < 34:
+
+			urlpoke = pokeapi + "rock"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
+
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo pedra")
+
+		elif temperatura > 33:
+
+			urlpoke = pokeapi + "fire"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
+
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo fogo")
+
+		else:
+
+			urlpoke = pokeapi + "normal"
+			pokejson = requests.get(urlpoke).json()
+			poke_rand = random.choice(pokejson["pokemon"])
+			pokera = poke_rand["pokemon"] ["name"]
+
+			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
+			flash(pokera + " é um pokemon do tipo normal")
 
 
+		pokeidurl = poke_rand["pokemon"] ["url"]
+		response = requests.get(requests.get(pokeidurl).json()["sprites"] ["front_default"])
+		img = Image.open(BytesIO(response.content))
+		data = io.BytesIO()
+		img.save(data, "PNG")
+		encoded_img_data = base64.b64encode(data.getvalue())
 
-	return render_template("index.html")
+		return render_template("index.html", img_data=encoded_img_data.decode('utf-8'))

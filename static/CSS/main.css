@@ -1,5 +1,5 @@
 body {
-	background-color: #363636;
+	background-color: #252525;
 	text-align: center;
 }
 
@@ -7,10 +7,10 @@ p {
 	color:  white;
 	font: Arial;
 	font-size: 1.6em;
-	margin: 20px;
+	margin: 10px;
 }
 
-img {
+.image1 {
 	margin: 60px 0 30px 0;
 	width: 700px;
 }
@@ -18,7 +18,7 @@ img {
 input {
 	width: 300px;
 	height: 50px;
-	margin: 20px;
+	margin: 10px;
 	border: none;
 	border-radius: 10px;
 	font: Arial;
@@ -36,4 +36,8 @@ input {
 	background-color: DimGray;
 	color:  white;
 	width: 180px;
+}
+
+.image2 {
+	width: 100px;
 }
