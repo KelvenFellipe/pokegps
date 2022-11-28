@@ -3,7 +3,7 @@
 #indica também o clima.
 #usa as informaçoes de temperaturaeratura e clima para indicar um pokemon que voce acharia no local no momento. `1`
 
-import requests, random, base64, io
+import requests, random, base64, io, string
 from PIL import Image
 from io import BytesIO
 from flask import Flask, render_template, request, flash
@@ -44,10 +44,11 @@ def greet():
 			urlpoke = pokeapi + "electric"
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
-			pokera = poke_rand["pokemon"] ["name"]	
+			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")	
 
 			flash("Em " + city + " esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo elétrico")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo elétrico")
 
 		elif temperatura < 5:
 
@@ -55,9 +56,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo gelo")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo gelo")
 
 		elif temperatura >= 5 and temperatura < 10:
 
@@ -65,9 +67,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo água")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo água")
 
 		elif temperatura >= 12 and temperatura < 15:
 
@@ -75,9 +78,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo grama")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo grama")
 
 		elif temperatura >= 15 and temperatura < 21:
 
@@ -85,9 +89,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo solo")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo solo")
 
 		elif temperatura >= 23 and temperatura < 27:
 
@@ -95,9 +100,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo inseto")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo inseto")
 
 		elif temperatura >= 27 and temperatura < 34:
 
@@ -105,9 +111,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo pedra")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo pedra")
 
 		elif temperatura > 33:
 
@@ -115,9 +122,10 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo fogo")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo fogo")
 
 		else:
 
@@ -125,18 +133,30 @@ def greet():
 			pokejson = requests.get(urlpoke).json()
 			poke_rand = random.choice(pokejson["pokemon"])
 			pokera = poke_rand["pokemon"] ["name"]
+			pokenome = pokera.replace("-", " ")
 
 			flash("Em " + city + " não esta chovendo, atualmente " + str(temperatura) + " Graus Celsius")
-			flash(pokera + " é um pokemon do tipo normal")
+			flash(string.capwords(pokenome) + " é um pokemon do tipo normal")
 
 
 
 
 		pokeidurl = poke_rand["pokemon"] ["url"]
-		response = requests.get(requests.get(pokeidurl).json()["sprites"] ["front_default"])
-		img = Image.open(BytesIO(response.content))
-		data = io.BytesIO()
-		img.save(data, "PNG")
-		encoded_img_data = base64.b64encode(data.getvalue())
+		response = requests.get(pokeidurl).json()["sprites"] ["other"] ["official-artwork"] ["front_default"]
 
+
+		if response is None:
+			response = requests.get(pokeidurl).json()["sprites"] ["front_default"]
+			uurl = requests.get(response)
+			img = Image.open(BytesIO(uurl.content))	
+			data = io.BytesIO()
+			img.save(data, "PNG")
+			encoded_img_data = base64.b64encode(data.getvalue())
+
+		else:
+			uurl = requests.get(response)
+			img = Image.open(BytesIO(uurl.content))	
+			data = io.BytesIO()
+			img.save(data, "PNG")
+			encoded_img_data = base64.b64encode(data.getvalue())
 		return render_template("index.html", img_data=encoded_img_data.decode('utf-8'))
